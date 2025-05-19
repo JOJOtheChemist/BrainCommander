@@ -19,41 +19,36 @@ Button/styles/hover = SubResource("StyleBoxFlat_nwofj")
 Button/styles/normal = SubResource("StyleBoxFlat_ivai2")
 
 [node name="Control" type="Control"]
-custom_minimum_size = Vector2(135, 240)
+custom_minimum_size = Vector2(45, 80)
 layout_mode = 3
 anchors_preset = 0
 offset_left = 2.0
 offset_top = -1.0
-offset_right = 137.0
-offset_bottom = 239.0
+offset_right = 47.0
+offset_bottom = 79.0
 script = ExtResource("1_nwofj")
 
 [node name="Control" type="Panel" parent="."]
-custom_minimum_size = Vector2(135, 240)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -69.5
-offset_top = -119.0
-offset_right = 65.5
-offset_bottom = 121.0
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="ColorRect" type="ColorRect" parent="Control"]
-custom_minimum_size = Vector2(135, 240)
+custom_minimum_size = Vector2(45, 80)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 0.321569, 1, 1)
+
+[node name="ColorRect" type="ColorRect" parent="Control"]
+custom_minimum_size = Vector2(45, 80)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(1, 0.321569, 1, 0)
 
 [node name="itemImg" type="TextureRect" parent="Control/ColorRect"]
+custom_minimum_size = Vector2(45, 80)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -64,7 +59,18 @@ texture = ExtResource("2_nwofj")
 expand_mode = 3
 stretch_mode = 5
 
+[node name="Button" type="Button" parent="Control/ColorRect/itemImg"]
+custom_minimum_size = Vector2(45, 80)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_4k7q8")
+
 [node name="name" type="Label" parent="Control/ColorRect"]
+visible = false
 layout_mode = 0
 offset_left = 5.0
 offset_top = -3.0
@@ -75,19 +81,5 @@ theme_override_font_sizes/font_size = 18
 text = "Your Cards"
 horizontal_alignment = 1
 
-[node name="Button" type="Button" parent="."]
-custom_minimum_size = Vector2(135, 240)
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 12.0
-offset_top = -32.0
-offset_right = -93.0
-offset_bottom = -132.0
-grow_horizontal = 2
-grow_vertical = 2
-theme = SubResource("Theme_4k7q8")
-
-[connection signal="button_down" from="Button" to="." method="_on_button_button_down"]
-[connection signal="button_up" from="Button" to="." method="_on_button_button_up"]
+[connection signal="button_down" from="Control/ColorRect/itemImg/Button" to="." method="_on_button_button_down"]
+[connection signal="button_up" from="Control/ColorRect/itemImg/Button" to="." method="_on_button_button_up"]

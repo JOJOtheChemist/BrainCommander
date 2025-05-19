@@ -33,14 +33,13 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Control2" parent="." node_paths=PackedStringArray("follow_target") groups=["cardDropable"] instance=ExtResource("1_ig7tw")]
-visible = false
 follow_target = NodePath("../Control")
 
 [node name="deck-chupai" parent="." instance=ExtResource("2_0xm2m")]
-offset_left = 359.0
-offset_top = 270.0
-offset_right = 684.0
-offset_bottom = 630.0
+offset_left = 475.0
+offset_top = 518.0
+offset_right = 800.0
+offset_bottom = 696.0
 script = ExtResource("4_lquwl")
 
 [node name="deck-anemy" parent="." instance=ExtResource("2_0xm2m")]
@@ -50,10 +49,10 @@ offset_right = 940.0
 offset_bottom = 221.0
 
 [node name="deck-self" parent="." instance=ExtResource("2_0xm2m")]
-offset_left = 355.0
-offset_top = 720.0
-offset_right = 1754.0
-offset_bottom = 1080.0
+offset_left = 341.0
+offset_top = 861.0
+offset_right = 1740.0
+offset_bottom = 1069.0
 
 [node name="Label" type="Label" parent="deck-self"]
 layout_mode = 1
@@ -72,10 +71,10 @@ theme_override_font_sizes/font_size = 20
 text = "发卡区"
 
 [node name="Button" type="Button" parent="." groups=["cardDropable"]]
-offset_left = 80.0
-offset_top = 519.0
-offset_right = 248.0
-offset_bottom = 671.0
+offset_left = 129.0
+offset_top = 645.0
+offset_right = 297.0
+offset_bottom = 797.0
 text = "抽卡"
 
 [node name="dash2" parent="." node_paths=PackedStringArray("stats_summary_label") instance=ExtResource("4_1bvp3")]

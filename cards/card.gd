@@ -89,55 +89,56 @@ func initCard(Nm) -> void:
 
 
 func drawCard():
-	
-	#print(cardInfo)
-	pickButton=$Button
-	var imgPath="res://cardImg/"+str(cardName)+".png"
+	pickButton = $Button
+	var imgPath = "res://cardImg/" + str(cardName) + ".png"
 	var texture: Texture2D = null
 	if ResourceLoader.exists(imgPath):
 		texture = load(imgPath)
 	else:
 		print("警告: 找不到图片资源: ", imgPath, "，使用默认图片。")
 		# texture = load("res://icon.svg") # Ensure you have a default image
-	
+
+	var original_size = texture.get_size() if texture else Vector2(100, 100)
+	var target_size = original_size * 0.3
+
 	var item_img_node = $Control/ColorRect/itemImg if $Control and $Control.has_node("ColorRect/itemImg") else null
 	if item_img_node:
 		item_img_node.texture = texture
-		# 获取原始图片大小
-		var original_size = texture.get_size() if texture else Vector2(100, 100)
-		# 设置为原始大小的一半
-		var target_size = original_size * 0.1
-		
-		
-		# 更新卡牌容器和背景
-		if $Control:
-			$Control.custom_minimum_size = target_size
-			$Control.size = target_size
-			
-			if $Control/ColorRect:
-				var color_rect = $Control/ColorRect
-				color_rect.custom_minimum_size = target_size
-				color_rect.size = target_size
-				color_rect.position = Vector2.ZERO
-				# 设置 ColorRect 的锚点以填充整个区域
-				color_rect.anchor_left = 0
-				color_rect.anchor_top = 0
-				color_rect.anchor_right = 1
-				color_rect.anchor_bottom = 1
-		
-		# 更新按钮大小
-		if pickButton:
-			pickButton.custom_minimum_size = target_size
-			pickButton.size = target_size
-			pickButton.position = Vector2.ZERO
-	
+		item_img_node.anchor_left = 0
+		item_img_node.anchor_top = 0
+		item_img_node.anchor_right = 1
+		item_img_node.anchor_bottom = 1
+		item_img_node.custom_minimum_size = target_size
+		item_img_node.expand = true
+		item_img_node.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+
+	# 父容器和背景同理
+	if $Control:
+		$Control.anchor_left = 0
+		$Control.anchor_top = 0
+		$Control.anchor_right = 1
+		$Control.anchor_bottom = 1
+		$Control.custom_minimum_size = target_size
+		if $Control/ColorRect:
+			var color_rect = $Control/ColorRect
+			color_rect.anchor_left = 0
+			color_rect.anchor_top = 0
+			color_rect.anchor_right = 1
+			color_rect.anchor_bottom = 1
+			color_rect.custom_minimum_size = target_size
+
+	if pickButton:
+		pickButton.anchor_left = 0
+		pickButton.anchor_top = 0
+		pickButton.anchor_right = 1
+		pickButton.anchor_bottom = 1
+		pickButton.custom_minimum_size = target_size
+
 	var name_label_node = $Control/ColorRect/name if $Control and $Control.has_node("ColorRect/name") else null
 	if name_label_node:
-		name_label_node.text=cardInfo.get("base_displayName", cardName)
-		# 调整文本标签位置到底部
-		name_label_node.anchor_top = 1
-		name_label_node.anchor_bottom = 1
-		name_label_node.position.y = -name_label_node.size.y  # 将标签移到底部
+		name_label_node.text = cardInfo.get("base_displayName", cardName)
+		name_label_node.anchor_left = 0
+		name_label_node.anchor_right = 1
 
 func set_in_play_area(status: bool):
 	is_in_play_area = status
