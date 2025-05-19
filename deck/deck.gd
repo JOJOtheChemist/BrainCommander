@@ -40,8 +40,11 @@ func print_deck_status() -> void:
 	for i in range(cards.size()):
 		var card = cards[i]
 		var index = get_card_index(card)
-		print("Index " + str(index) + ": " + card.cardName + 
-			" (Instance ID: " + str(card.get_instance_id()) + ")")
+		var effects = card.cardInfo.get("Effects", "N/A")
+		var special = card.cardInfo.get("Special Conditions", "N/A")
+		print("Index %d: %s (ID: %d)\n  效果: %s\n  特殊条件: %s" % [
+			index, card.cardName, card.get_instance_id(), effects, special
+		])
 	print("========================\n")
 	
 func add_card(cardToAdd: card) -> void: # 明确 cardToAdd 的类型
