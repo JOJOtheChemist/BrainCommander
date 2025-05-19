@@ -15,7 +15,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="cardPoiDeck" type="HBoxContainer" parent="ScrollContainer"]
+[node name="cardPoiDeck" type="Control" parent="ScrollContainer"]
 layout_mode = 2
 
 [node name="cardDcek" type="Control" parent="."]

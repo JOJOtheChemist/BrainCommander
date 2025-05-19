@@ -6,10 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://dfbb6jv3awdtw" path="res://dashboard/dashboard.tscn" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://bsnva8espr1wm" path="res://deck/deck-chupai.gd" id="4_lquwl"]
 
-[node name="Node2D" type="Node2D" node_paths=PackedStringArray("scene_1", "scene_2", "scene_3", "dashboard_node")]
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("scene_1", "scene_3", "dashboard_node")]
 script = ExtResource("1_h2yge")
-scene_1 = NodePath("deck-chupai")
-scene_2 = NodePath("deck-anemy")
+scene_1 = NodePath("deck-profile-self")
 scene_3 = NodePath("deck-self")
 dashboard_node = NodePath("dash2")
 maxRandomItemNum = 1
@@ -26,7 +25,6 @@ siteItems = {
 }
 
 [node name="Control" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
@@ -35,24 +33,26 @@ offset_bottom = 40.0
 [node name="Control2" parent="." node_paths=PackedStringArray("follow_target") groups=["cardDropable"] instance=ExtResource("1_ig7tw")]
 follow_target = NodePath("../Control")
 
-[node name="deck-chupai" parent="." instance=ExtResource("2_0xm2m")]
-offset_left = 475.0
-offset_top = 518.0
-offset_right = 800.0
-offset_bottom = 696.0
+[node name="deck-profile-self" parent="." instance=ExtResource("2_0xm2m")]
+offset_left = 106.0
+offset_top = 833.0
+offset_right = 315.0
+offset_bottom = 1073.0
 script = ExtResource("4_lquwl")
 
-[node name="deck-anemy" parent="." instance=ExtResource("2_0xm2m")]
-offset_left = 598.0
-offset_top = -139.0
-offset_right = 940.0
-offset_bottom = 221.0
+[node name="Label" type="Label" parent="deck-profile-self"]
+layout_mode = 0
+offset_left = 67.0
+offset_top = 96.0
+offset_right = 131.0
+offset_bottom = 119.0
+text = "自己头像"
 
 [node name="deck-self" parent="." instance=ExtResource("2_0xm2m")]
-offset_left = 341.0
-offset_top = 861.0
-offset_right = 1740.0
-offset_bottom = 1069.0
+offset_left = 429.0
+offset_top = 863.0
+offset_right = 1475.0
+offset_bottom = 1071.0
 
 [node name="Label" type="Label" parent="deck-self"]
 layout_mode = 1
@@ -78,10 +78,10 @@ offset_bottom = 797.0
 text = "抽卡"
 
 [node name="dash2" parent="." node_paths=PackedStringArray("stats_summary_label") instance=ExtResource("4_1bvp3")]
-offset_left = 744.0
-offset_top = 338.0
-offset_right = 2057.0
-offset_bottom = 338.0
+offset_left = 1417.0
+offset_top = 802.0
+offset_right = 1783.0
+offset_bottom = 1020.0
 stats_summary_label = NodePath("Label1")
 
 [node name="Label1" type="Label" parent="dash2"]
@@ -92,5 +92,37 @@ offset_right = -415.0
 offset_bottom = -69.0
 theme_override_font_sizes/font_size = 25
 text = "12345"
+
+[node name="deck-profile-anemy1" parent="." instance=ExtResource("2_0xm2m")]
+offset_left = 427.0
+offset_top = 88.0
+offset_right = 636.0
+offset_bottom = 328.0
+script = ExtResource("4_lquwl")
+
+[node name="Label" type="Label" parent="deck-profile-anemy1"]
+layout_mode = 0
+offset_left = 67.0
+offset_top = 96.0
+offset_right = 131.0
+offset_bottom = 119.0
+text = "敌人1头像
+"
+
+[node name="deck-profile-anemy2" parent="." instance=ExtResource("2_0xm2m")]
+offset_left = 1519.0
+offset_top = 310.0
+offset_right = 1728.0
+offset_bottom = 550.0
+script = ExtResource("4_lquwl")
+
+[node name="Label" type="Label" parent="deck-profile-anemy2"]
+layout_mode = 0
+offset_left = 67.0
+offset_top = 96.0
+offset_right = 131.0
+offset_bottom = 119.0
+text = "敌人1头像
+"
 
 [connection signal="button_down" from="Button" to="." method="get_some_card"]

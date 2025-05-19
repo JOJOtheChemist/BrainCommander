@@ -2,10 +2,13 @@ extends Panel
 class_name DeckBase # 方便类型提示和实例化
 
 @onready var cardDeck: Control = $cardDcek # 实际存放卡牌节点的容器
-@onready var cardPoiDeck: HBoxContainer = $ScrollContainer/cardPoiDeck # 卡牌背景/占位符的容器
+@onready var cardPoiDeck: Control = $ScrollContainer/cardPoiDeck # 卡牌背景/占位符的容器
 
 # 添加一个字典来存储卡牌序号
 var card_indices: Dictionary = {}
+
+func _ready():
+	pass # 移除 separation 设置
 
 func _process(delta: float) -> void:
 	if cardDeck.get_child_count()!=0:
@@ -43,27 +46,31 @@ func print_deck_status() -> void:
 	
 func add_card(cardToAdd: card) -> void: # 明确 cardToAdd 的类型
 	var cardBackground = preload("res://card_background.tscn").instantiate()
-	# Add new background to the end of cardPoiDeck; sort_and_update_ui will position it correctly.
 	cardPoiDeck.add_child(cardBackground)
 
 	var global_poi = cardToAdd.global_position
 
-	if cardToAdd.get_parent() != null: # 从旧父节点移除
+	var is_from_this_deck = cardToAdd.is_inside_tree() and cardToAdd.get_parent() == cardDeck
+
+	if cardToAdd.get_parent() != null:
 		cardToAdd.get_parent().remove_child(cardToAdd)
-	
-	cardDeck.add_child(cardToAdd) # 添加到新的牌堆容器
-	cardToAdd.global_position = global_poi # 尝试保持全局位置，或根据牌堆布局调整
 
-	cardToAdd.follow_target = cardBackground # 设置卡牌的跟随目标
-	cardToAdd.preDeck = self # 记录卡牌之前的牌堆是当前牌堆
+	if is_from_this_deck:
+		# 保持原有顺序，把卡牌插回原来的位置
+		var old_index = cardToAdd.get_index()
+		cardDeck.add_child(cardToAdd)
+		cardDeck.move_child(cardToAdd, old_index)
+		cardPoiDeck.move_child(cardBackground, old_index)
+	else:
+		cardDeck.add_child(cardToAdd)
+		cardPoiDeck.move_child(cardBackground, -1)  # 末尾
 
-	# 卡牌的 cardCurrentState 应由具体牌堆（手牌区、出牌区）的 add_card 逻辑来决定
-	# 此处不再统一设置 cardToAdd.cardCurrentState = cardToAdd.cardState.following
-	
+	cardToAdd.global_position = global_poi
+	cardToAdd.follow_target = cardBackground
+	cardToAdd.preDeck = self
+
 	print(cardToAdd.name + " added to deck: " + self.name)
-	# 添加后可能需要重新排序或更新UI
 	call_deferred("sort_and_update_ui")
-	# 打印更新后的牌堆状态
 	call_deferred("print_deck_status")
 
 func remove_card(cardToRemove: card) -> void:
@@ -116,7 +123,13 @@ func get_all_cards() -> Array:
 func sort_and_update_ui():
 	if cardDeck != null and cardDeck.get_child_count() > 0:
 		var cards_in_deck = cardDeck.get_children()
-		sort_nodes_by_position(cards_in_deck) # This sorts cardDeck children and the 'cards_in_deck' array.
+		sort_nodes_by_position(cards_in_deck)
+
+		# 重叠效果
+		var overlap_offset = 100
+		for i in range(cardPoiDeck.get_child_count()):
+			var bg = cardPoiDeck.get_child(i)
+			bg.position = Vector2(i * overlap_offset, 0)
 
 		# After sort_nodes_by_position, cardDeck's children are in their new order (based on its logic).
 		# Sync cardPoiDeck to this new order.

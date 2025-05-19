@@ -89,7 +89,7 @@ func initCard(Nm) -> void:
 
 
 func drawCard():
-	pickButton = $Button
+	pickButton = $Control/ColorRect/itemImg/Button
 	var imgPath = "res://cardImg/" + str(cardName) + ".png"
 	var texture: Texture2D = null
 	if ResourceLoader.exists(imgPath):
