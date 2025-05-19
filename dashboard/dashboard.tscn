@@ -1,0 +1,84 @@
+[gd_scene load_steps=4 format=3 uid="uid://dfbb6jv3awdtw"]
+
+[ext_resource type="Script" uid="uid://lsnsltcpc1wi" path="res://dashboard/dashboard.gd" id="1_0vxy8"]
+[ext_resource type="Texture2D" path="res://cardImg/Ice.png" id="2_wnjaa"]
+[ext_resource type="Texture2D" path="res://cardImg/Silicon_ore.png" id="3_3ug1v"]
+
+[node name="dashboard" type="Control" node_paths=PackedStringArray("display_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -3.0
+offset_top = -42.0
+offset_right = 1310.0
+offset_bottom = -42.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_0vxy8")
+display_label = NodePath("HBoxContainer/Panel/MarginContainer/VBoxContainer/number")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -32.0
+offset_bottom = 32.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 2
+
+[node name="TextureRect" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+texture = ExtResource("2_wnjaa")
+
+[node name="Panel" type="Panel" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 100
+theme_override_constants/margin_top = 100
+theme_override_constants/margin_right = 100
+theme_override_constants/margin_bottom = 100
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/Panel/MarginContainer"]
+layout_mode = 2
+
+[node name="name" type="Label" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "卡牌数值计算"
+
+[node name="number" type="Label" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "123123123"
+autowrap_mode = 1
+
+[node name="number" type="Label" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer/number"]
+custom_minimum_size = Vector2(100, 100)
+theme_override_font_sizes/font_size = 20
+text = "123123123"
+autowrap_mode = 1
+
+[node name="number" type="Label" parent="HBoxContainer/Panel/MarginContainer/VBoxContainer/number/number"]
+custom_minimum_size = Vector2(100, 100)
+theme_override_font_sizes/font_size = 20
+text = "123123123"
+autowrap_mode = 1
+
+[node name="TextureRect2" type="TextureRect" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+texture = ExtResource("3_3ug1v")

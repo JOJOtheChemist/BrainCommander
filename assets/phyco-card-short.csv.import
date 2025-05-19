@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://uhjb5cm0c2hv"
+
+[deps]
+
+files=["res://assets/phyco-card-short.index.translation", "res://assets/phyco-card-short.base.translation", "res://assets/phyco-card-short.Brain Region.translation", "res://assets/phyco-card-short.base.translation", "res://assets/phyco-card-short.base.translation", "res://assets/phyco-card-short.base.translation", "res://assets/phyco-card-short.Color.translation", "res://assets/phyco-card-short.Category.translation", "res://assets/phyco-card-short.Biological Mechanism.translation", "res://assets/phyco-card-short.Effects.translation", "res://assets/phyco-card-short.Special Conditions.translation"]
+
+source_file="res://assets/phyco-card-short.csv"
+dest_files=["res://assets/phyco-card-short.index.translation", "res://assets/phyco-card-short.base.translation", "res://assets/phyco-card-short.Brain Region.translation", "res://assets/phyco-card-short.base.translation", "res://assets/phyco-card-short.base.translation", "res://assets/phyco-card-short.base.translation", "res://assets/phyco-card-short.Color.translation", "res://assets/phyco-card-short.Category.translation", "res://assets/phyco-card-short.Biological Mechanism.translation", "res://assets/phyco-card-short.Effects.translation", "res://assets/phyco-card-short.Special Conditions.translation"]
+
+[params]
+
+compress=true
+delimiter=0

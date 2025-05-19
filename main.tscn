@@ -1,0 +1,97 @@
+[gd_scene load_steps=6 format=3 uid="uid://cper56cxk0sl1"]
+
+[ext_resource type="Script" uid="uid://ds3gq65i0j2y3" path="res://main.gd" id="1_h2yge"]
+[ext_resource type="PackedScene" uid="uid://bmjqf30wl6ddi" path="res://cards/card.tscn" id="1_ig7tw"]
+[ext_resource type="PackedScene" uid="uid://cu546fiupegt0" path="res://deck/deck.tscn" id="2_0xm2m"]
+[ext_resource type="PackedScene" uid="uid://dfbb6jv3awdtw" path="res://dashboard/dashboard.tscn" id="4_1bvp3"]
+[ext_resource type="Script" uid="uid://bsnva8espr1wm" path="res://deck/deck-chupai.gd" id="4_lquwl"]
+
+[node name="Node2D" type="Node2D" node_paths=PackedStringArray("scene_1", "scene_2", "scene_3", "dashboard_node")]
+script = ExtResource("1_h2yge")
+scene_1 = NodePath("deck-chupai")
+scene_2 = NodePath("deck-anemy")
+scene_3 = NodePath("deck-self")
+dashboard_node = NodePath("dash2")
+maxRandomItemNum = 1
+minRandomItemNum = 4
+siteItems = {
+"AdrenalineSurge": 1,
+"CognitiveOverload": 1,
+"DopamineAntagonist": 1,
+"ExperienceDownload": 1,
+"FearVirus": 1,
+"MemoryTampering": 1,
+"PleasureAddiction": 1,
+"RationalMatrix": 1
+}
+
+[node name="Control" type="Control" parent="."]
+visible = false
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Control2" parent="." node_paths=PackedStringArray("follow_target") groups=["cardDropable"] instance=ExtResource("1_ig7tw")]
+visible = false
+follow_target = NodePath("../Control")
+
+[node name="deck-chupai" parent="." instance=ExtResource("2_0xm2m")]
+offset_left = 359.0
+offset_top = 270.0
+offset_right = 684.0
+offset_bottom = 630.0
+script = ExtResource("4_lquwl")
+
+[node name="deck-anemy" parent="." instance=ExtResource("2_0xm2m")]
+offset_left = 598.0
+offset_top = -139.0
+offset_right = 940.0
+offset_bottom = 221.0
+
+[node name="deck-self" parent="." instance=ExtResource("2_0xm2m")]
+offset_left = 355.0
+offset_top = 720.0
+offset_right = 1754.0
+offset_bottom = 1080.0
+
+[node name="Label" type="Label" parent="deck-self"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -24.0
+offset_top = -11.5
+offset_right = 24.0
+offset_bottom = 11.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "发卡区"
+
+[node name="Button" type="Button" parent="." groups=["cardDropable"]]
+offset_left = 80.0
+offset_top = 519.0
+offset_right = 248.0
+offset_bottom = 671.0
+text = "抽卡"
+
+[node name="dash2" parent="." node_paths=PackedStringArray("stats_summary_label") instance=ExtResource("4_1bvp3")]
+offset_left = 744.0
+offset_top = 338.0
+offset_right = 2057.0
+offset_bottom = 338.0
+stats_summary_label = NodePath("Label1")
+
+[node name="Label1" type="Label" parent="dash2"]
+layout_mode = 0
+offset_left = -688.0
+offset_top = -241.0
+offset_right = -415.0
+offset_bottom = -69.0
+theme_override_font_sizes/font_size = 25
+text = "12345"
+
+[connection signal="button_down" from="Button" to="." method="get_some_card"]
