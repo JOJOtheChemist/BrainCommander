@@ -6,7 +6,7 @@ var brain_region_to_frame = {
 	# 中文名称
 	"杏仁核": "res://assets/frames/amygdala_frame.png",
 	"伏隔核": "res://assets/frames/nucleus_accumbens_frame.png",
-	"前额叶皮层": "res://assets/frames/cortex_frame.png", 
+	"前额叶皮层": "res://assets/frames/cortex_frame.png",
 	"海马体": "res://assets/frames/hippocampus_frame.png",
 	
 	# 英文名称
@@ -138,7 +138,7 @@ func find_frame_sprite() -> Node:
 			if node is TextureRect or node is Sprite2D:
 				print("成功: 使用路径找到框架节点: " + path)
 				return node
-	
+			
 	# 第二步：使用场景树中的节点名查找
 	print("使用节点名称查找框架...")
 	var nodes = _find_nodes_by_name(_card, "CardFrame")
@@ -149,7 +149,7 @@ func find_frame_sprite() -> Node:
 		if node is TextureRect or node is Sprite2D:
 			print("成功: 通过精确名称找到框架节点: " + node.name)
 			return node
-	
+			
 	# 第三步：递归查找所有纹理节点，并进行名称模糊匹配
 	print("尝试模糊匹配查找框架节点...")
 	var textures = []
@@ -162,7 +162,7 @@ func find_frame_sprite() -> Node:
 	
 	# 优先查找名称包含"frame"的节点
 	for tex_node in textures:
-		if "frame" in tex_node.name.to_lower() or "card" in tex_node.name.to_lower() and "frame" in tex_node.name.to_lower():
+		if "frame" in tex_node.name.to_lower() or ("card" in tex_node.name.to_lower() and "frame" in tex_node.name.to_lower()):
 			print("成功: 通过名称模糊匹配找到框架节点: " + tex_node.name)
 			return tex_node
 	
