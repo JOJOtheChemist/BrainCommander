@@ -91,6 +91,9 @@ func _on_button_button_up() -> void:
 	whichDeckMouseIn = null
 
 func initCard(Nm) -> void:
+	print("========== 初始化卡牌 ==========")
+	print("卡牌名称: " + Nm)
+	
 	cardInfo=CardInfos.infosDic[Nm]
 	cardWeight=float(cardInfo["base_cardWeight"])
 	cardClass=cardInfo["base_cardType"]
@@ -100,25 +103,42 @@ func initCard(Nm) -> void:
 	is_in_play_area = false
 	cardCurrentState=cardState.following
 	
-	# 立即打印调试信息，检查数据是否正确加载
-	print("初始化卡牌: " + cardName + ", 显示名称: " + cardInfo.get("base_displayName", cardName))
-	print("卡牌类型: " + cardType + ", 脑区: " + brainRegion)
+	# 打印卡牌详细信息
+	print("卡牌信息:")
+	print("- 显示名称: " + cardInfo.get("base_displayName", cardName))
+	print("- 卡牌类型: " + cardType)
+	print("- 脑区: " + brainRegion)
 	
-	# 直接设置卡牌类型图标
-	update_card_type_icon()
+	# 确保view_manager和frame_manager正确初始化
+	if view_manager == null:
+		print("重新创建view_manager")
+		view_manager = CardViewManager.new(self)
+	
+	if frame_manager == null:
+		print("重新创建frame_manager")
+		frame_manager = CardFrameManager.new(self)
 	
 	# 更新卡面显示
 	if view_manager:
+		print("使用view_manager更新卡面")
 		view_manager.update_card_view(cardInfo)
 	else:
-		# 如果view_manager未初始化，则用老方法绘制卡牌
+		print("警告: view_manager未初始化，使用老方法绘制卡牌")
 		drawCard()
 		
 	# 更新卡牌框架
 	if frame_manager:
+		print("使用frame_manager更新框架，脑区: " + brainRegion)
 		frame_manager.update_frame(brainRegion)
+	else:
+		print("错误: frame_manager仍为空，无法更新框架")
+		
+	# 直接设置卡牌类型图标
+	print("更新卡牌类型图标")
+	update_card_type_icon()
 		
 	self.set_meta("is_card_instance", true)
+	print("========== 卡牌初始化完成 ==========")
 
 func drawCard():
 	pickButton = $Control/ColorRect/itemImg/Button
@@ -277,13 +297,13 @@ func find_all_labels(node, labels_array):
 
 # 直接更新卡牌类型图标
 func update_card_type_icon():
-	var type_icon = $Control/CardTypeIcon
+	# 使用递归查找替代直接路径访问
+	var type_icon = find_card_type_icon()
+	
 	if type_icon == null:
-		print("CardTypeIcon 节点未找到")
+		print("无法找到CardTypeIcon节点")
 		return
 		
-	print("找到CardTypeIcon节点: " + str(type_icon.get_path()))
-	
 	# 设置图标可见性
 	type_icon.visible = true
 	
@@ -291,6 +311,49 @@ func update_card_type_icon():
 	var icon_path = "res://assets/icons/" + cardType.to_lower() + ".png"
 	if ResourceLoader.exists(icon_path):
 		type_icon.texture = load(icon_path)
-		print("直接设置卡牌类型图标: " + cardType + ", 路径: " + icon_path)
+		print("设置卡牌类型图标: " + cardType)
 	else:
 		print("警告: 找不到图标资源: " + icon_path)
+
+# 递归查找卡牌类型图标节点
+func find_card_type_icon() -> TextureRect:
+	# 首先尝试多种直接路径
+	var possible_paths = [
+		"Control/CardTypeIcon",
+		"Control/ColorRect/CardTypeIcon",
+		"CardTypeIcon"
+	]
+	
+	for path in possible_paths:
+		var node = get_node_or_null(path)
+		if node and node is TextureRect:
+			print("使用路径找到卡牌类型图标: " + path)
+			return node
+	
+	# 如果直接路径都失败了，递归查找所有TextureRect节点
+	print("使用递归查找卡牌类型图标节点...")
+	var texture_rects = []
+	find_all_texture_rects(self, texture_rects)
+	
+	# 优先查找名称匹配的节点
+	for tex_rect in texture_rects:
+		if "cardtype" in tex_rect.name.to_lower() or "type" in tex_rect.name.to_lower() and "icon" in tex_rect.name.to_lower():
+			print("通过名称匹配找到类型图标节点: " + tex_rect.name)
+			return tex_rect
+			
+	# 如果找不到，就找位于右上角区域的小图标
+	if texture_rects.size() > 1:
+		for tex_rect in texture_rects:
+			# 排除明显是卡牌主图或框架的纹理
+			if tex_rect.name != "itemImg" and "frame" not in tex_rect.name.to_lower() and tex_rect.get_rect().size.x < 50:
+				print("使用小型纹理节点作为类型图标: " + tex_rect.name)
+				return tex_rect
+	
+	return null
+	
+# 递归查找所有TextureRect节点
+func find_all_texture_rects(node, texture_rects_array):
+	for child in node.get_children():
+		if child is TextureRect:
+			texture_rects_array.append(child)
+		find_all_texture_rects(child, texture_rects_array)

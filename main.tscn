@@ -37,7 +37,6 @@ offset_top = 18.0
 offset_right = 1123.0
 offset_bottom = 406.0
 cardName = "记忆下载"
-brainRegion = "1233"
 follow_target = NodePath("../Control")
 
 [node name="修改画面描述及推荐色系-2" type="Sprite2D" parent="."]

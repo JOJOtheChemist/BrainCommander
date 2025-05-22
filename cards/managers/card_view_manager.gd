@@ -160,7 +160,8 @@ func update_card_view(card_info_or_name):
 	set_card_type(card_type)
 	
 	# 3. 设置卡套
-	set_card_frame(card_info.get("Brain Region", ""), card_info.get("Brain Region", ""))
+	var brain_region = card_info.get("Brain Region", "")
+	set_card_frame(brain_region)
 	
 	# 4. 设置卡牌图片
 	set_card_image(card_info.get("base_cardName", ""))
@@ -242,10 +243,16 @@ func set_card_type(card_type: String):
 			card_type_icon.visible = true
 			print("成功设置卡牌类型图标! 新纹理=", texture, ", 可见性=", card_type_icon.visible)
 			
-			# 强制更新处理和重绘
-			card_type_icon.update()
-			if card_type_icon.get_parent():
-				card_type_icon.get_parent().update()
+			# 强制重绘 (使用queue_redraw替代update)
+			if card_type_icon is Control:
+				card_type_icon.queue_redraw()
+				print("已请求重绘卡牌类型图标")
+			
+			# 更新父节点
+			var parent = card_type_icon.get_parent()
+			if parent and parent is Control:
+				parent.queue_redraw()
+				print("已请求重绘父节点: " + parent.name)
 		else:
 			print("错误: CardTypeIcon不是TextureRect类型，而是: " + card_type_icon.get_class())
 	else:
@@ -255,14 +262,17 @@ func set_card_type(card_type: String):
 			print("警告: 无法找到图标，隐藏CardTypeIcon")
 
 # 添加一个新函数：规范化脑区名称（转换为小写并移除空格）
-func normalize_brain_region(brain_region: String) -> String:
-	return brain_region.strip_edges().to_lower().replace(" ", "_")
+func normalize_brain_region(region: String) -> String:
+	return region.strip_edges().to_lower().replace(" ", "_")
 
 # 设置卡套，使用脑区对应的框架图片
-func set_card_frame(card_class: String, brain_region: String):
+func set_card_frame(brain_region: String):
 	if card_frame == null:
-		print("警告: 找不到卡牌框架节点")
-		return
+		print("未找到卡牌框架节点，尝试搜索...")
+		card_frame = find_card_frame_node()
+		if card_frame == null:
+			print("警告: 找不到卡牌框架节点，无法设置框架")
+			return
 		
 	print("设置卡套，脑区: " + brain_region)
 		
@@ -313,12 +323,72 @@ func set_card_frame(card_class: String, brain_region: String):
 		card_frame.texture = frame_texture
 		print("成功设置卡片框架: " + brain_region)
 		
-		# 强制更新处理和重绘
-		card_frame.update()
-		if card_frame.get_parent():
-			card_frame.get_parent().update()
+		# 强制重绘
+		if card_frame is Control:
+			card_frame.queue_redraw()
+			
+		# 更新父节点
+		var parent = card_frame.get_parent()
+		if parent and parent is Control:
+			parent.queue_redraw()
 	else:
 		print("警告: 无法为脑区 " + brain_region + " 找到合适的框架")
+
+# 查找卡片框架节点
+func find_card_frame_node() -> TextureRect:
+	# 首先尝试多种直接路径
+	var possible_paths = [
+		"Control/ColorRect/CardFrame",
+		"Control/CardFrame",
+		"CardFrame",
+		"ColorRect/CardFrame"
+	]
+	
+	for path in possible_paths:
+		var node = get_node_or_null(path)
+		if node and node is TextureRect:
+			print("使用路径找到卡片框架节点: " + path)
+			return node
+	
+	# 递归查找所有TextureRect节点
+	print("使用递归查找卡片框架节点...")
+	var texture_rects = []
+	find_all_texture_rects(self.get_parent(), texture_rects)
+	
+	# 优先通过名称匹配
+	for tex_rect in texture_rects:
+		if "cardframe" in tex_rect.name.to_lower() or "frame" in tex_rect.name.to_lower():
+			print("通过名称匹配找到框架节点: " + tex_rect.name)
+			return tex_rect
+	
+	# 查找最大的非主图纹理作为背景框架
+	if texture_rects.size() > 1:
+		var largest_rect = null
+		var largest_size = 0
+		
+		for tex_rect in texture_rects:
+			if tex_rect.name != "itemImg" and tex_rect.name != "CardTypeIcon":
+				var size = tex_rect.get_rect().size.x * tex_rect.get_rect().size.y
+				if size > largest_size:
+					largest_size = size
+					largest_rect = tex_rect
+		
+		if largest_rect:
+			print("使用找到的最大纹理作为卡片框架: " + largest_rect.name)
+			return largest_rect
+	
+	return null
+
+# 递归查找所有TextureRect节点
+func find_all_texture_rects(node, texture_rects_array):
+	if node == null:
+		print("警告: 传入节点为空，无法查找纹理节点")
+		return
+		
+	for child in node.get_children():
+		if child is TextureRect:
+			texture_rects_array.append(child)
+		find_all_texture_rects(child, texture_rects_array)
 
 # 设置卡牌图片
 func set_card_image(card_name: String):
