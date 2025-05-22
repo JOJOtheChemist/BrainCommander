@@ -254,39 +254,69 @@ func set_card_type(card_type: String):
 			card_type_icon.visible = false
 			print("警告: 无法找到图标，隐藏CardTypeIcon")
 
+# 添加一个新函数：规范化脑区名称（转换为小写并移除空格）
+func normalize_brain_region(brain_region: String) -> String:
+	return brain_region.strip_edges().to_lower().replace(" ", "_")
+
 # 设置卡套，使用脑区对应的框架图片
 func set_card_frame(card_class: String, brain_region: String):
 	if card_frame == null:
 		print("警告: 找不到卡牌框架节点")
 		return
 		
+	print("设置卡套，脑区: " + brain_region)
+		
 	# 根据脑区选择对应的框架图片
 	var frame_texture = null
+	var normalized_region = normalize_brain_region(brain_region)
 	
 	if brain_region != "":
-		# 尝试加载脑区对应的框架
+		# 方法1：直接匹配（大小写敏感）
 		if brain_region in card_frames and card_frames[brain_region] != null:
 			frame_texture = card_frames[brain_region]
-			print("使用脑区框架: " + brain_region)
+			print("方法1: 直接匹配框架: " + brain_region)
+		
+		# 方法2：尝试规范化后的键匹配
+		elif normalized_region in card_frames and card_frames[normalized_region] != null:
+			frame_texture = card_frames[normalized_region]
+			print("方法2: 规范化匹配框架: " + normalized_region)
+		
+		# 方法3：尝试不区分大小写的键匹配
 		else:
-			# 确定备用框架名
-			var frame_name = ""
-			match brain_region:
-				"amygdala": frame_name = "amygdala_frame"
-				"nucleus_accumbens": frame_name = "nucleus_accumbens_frame"
-				"cortex": frame_name = "cortex_frame"
-				"hippocampus": frame_name = "hippocampus_frame"
-				_: frame_name = "nucleus_accumbens_frame" # 默认框架
+			for key in card_frames.keys():
+				if key.to_lower() == normalized_region and card_frames[key] != null:
+					frame_texture = card_frames[key]
+					print("方法3: 不区分大小写匹配框架: " + key)
+					break
 			
-			# 尝试直接加载
-			var frame_path = "res://assets/frames/" + frame_name + ".png"
-			if ResourceLoader.exists(frame_path):
-				frame_texture = load(frame_path)
-				print("直接加载框架: " + frame_path)
+			# 如果上述方法都失败，尝试直接加载
+			if frame_texture == null:
+				# 确定备用框架名
+				var frame_name = ""
+				match normalized_region:
+					"amygdala": frame_name = "amygdala_frame"
+					"nucleus_accumbens", "nucleus accumbens": frame_name = "nucleus_accumbens_frame"
+					"cortex", "prefrontal_cortex", "prefrontal cortex": frame_name = "cortex_frame"
+					"hippocampus": frame_name = "hippocampus_frame"
+					_: 
+						print("未匹配的脑区: " + normalized_region + "，使用默认框架")
+						frame_name = "nucleus_accumbens_frame" # 默认框架
+				
+				# 尝试直接加载
+				var frame_path = "res://assets/frames/" + frame_name + ".png"
+				if ResourceLoader.exists(frame_path):
+					frame_texture = load(frame_path)
+					print("方法4: 直接加载框架: " + frame_path)
 	
 	# 如果成功找到纹理，应用它
 	if frame_texture != null:
 		card_frame.texture = frame_texture
+		print("成功设置卡片框架: " + brain_region)
+		
+		# 强制更新处理和重绘
+		card_frame.update()
+		if card_frame.get_parent():
+			card_frame.get_parent().update()
 	else:
 		print("警告: 无法为脑区 " + brain_region + " 找到合适的框架")
 
