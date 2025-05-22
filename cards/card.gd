@@ -3,7 +3,9 @@ class_name card
 
 # 引入卡面管理器
 const CardViewManager = preload("res://cards/managers/card_view_manager.gd")
+const CardFrameManager = preload("res://cards/managers/card_frame_manager.gd")
 var view_manager: CardViewManager
+var frame_manager: CardFrameManager
 
 var velocity = Vector2.ZERO
 var damping = 0.35
@@ -32,6 +34,7 @@ var is_in_play_area: bool = false
 func _ready():
 	# 初始化卡面管理器
 	view_manager = CardViewManager.new(self)
+	frame_manager = CardFrameManager.new(self)
 
 func _process(delta: float) -> void:
 	if is_in_play_area:
@@ -90,7 +93,7 @@ func _on_button_button_up() -> void:
 func initCard(Nm) -> void:
 	cardInfo=CardInfos.infosDic[Nm]
 	cardWeight=float(cardInfo["base_cardWeight"])
-	cardClass=cardInfo["base_cardClass"]
+	cardClass=cardInfo["base_cardType"]
 	cardName=cardInfo["base_cardName"]
 	brainRegion=cardInfo["Brain Region"]
 	cardType=cardInfo["CardType"]
@@ -99,6 +102,10 @@ func initCard(Nm) -> void:
 	
 	# 立即打印调试信息，检查数据是否正确加载
 	print("初始化卡牌: " + cardName + ", 显示名称: " + cardInfo.get("base_displayName", cardName))
+	print("卡牌类型: " + cardType + ", 脑区: " + brainRegion)
+	
+	# 直接设置卡牌类型图标
+	update_card_type_icon()
 	
 	# 更新卡面显示
 	if view_manager:
@@ -107,8 +114,9 @@ func initCard(Nm) -> void:
 		# 如果view_manager未初始化，则用老方法绘制卡牌
 		drawCard()
 		
-	# 更新卡牌框架，根据脑区或类型来更改外观
-	update_card_frame()
+	# 更新卡牌框架
+	if frame_manager:
+		frame_manager.update_frame(brainRegion)
 		
 	self.set_meta("is_card_instance", true)
 
@@ -174,11 +182,8 @@ func drawCard():
 			print("找到替代节点并设置卡牌标签: " + display_name)
 		else:
 			print("无法找到任何适合显示卡牌名称的节点")
-		
-	# 更新右上角显示
-	update_card_type_display()
 	
-	# 更新卡牌的其他信息（例如脑区等）
+	# 更新卡牌的脑区信息
 	update_card_region_display()
 
 func set_in_play_area(status: bool):
@@ -235,59 +240,6 @@ func find_region_label_node():
 		
 	return null
 
-# 新增：更新卡牌类型显示的函数
-func update_card_type_display():
-	var type_icon_path = "res://assets/icons/" + cardType.to_lower() + ".png"
-	var type_texture = load(type_icon_path) if ResourceLoader.exists(type_icon_path) else null
-	
-	# 尝试找到类型图标节点
-	var type_icon_node = find_type_icon_node()
-	
-	if type_icon_node and type_texture:
-		type_icon_node.texture = type_texture
-		type_icon_node.visible = true
-		print("设置卡牌类型图标: " + cardType + " 到节点: " + str(type_icon_node))
-	else:
-		if type_icon_node:
-			type_icon_node.visible = false
-		print("无法加载卡牌类型图标: " + type_icon_path)
-
-# 查找类型图标节点的辅助函数
-func find_type_icon_node():
-	var possible_paths = [
-		"Control/ColorRect/CardFrame/TypeIcon",
-		"Control/ColorRect/typeIcon",
-		"Control/ColorRect/CardFrame/CardType",
-		"Control/CardFrame/TypeIcon",
-		"ColorRect/TypeIcon",
-		"TypeIcon"
-	]
-	
-	for path in possible_paths:
-		var node = get_node_or_null(path)
-		if node and (node is TextureRect or node is Sprite2D):
-			print("找到类型图标节点: " + path)
-			return node
-			
-	# 递归查找任何可能的TextureRect或Sprite2D节点
-	var textures = []
-	find_all_texture_nodes(self, textures)
-	
-	if textures.size() > 0:
-		print("通过递归找到" + str(textures.size()) + "个纹理节点，使用第一个")
-		return textures[0]
-		
-	return null
-
-# 查找所有纹理节点
-func find_all_texture_nodes(node, textures_array):
-	for child in node.get_children():
-		if child is TextureRect or child is Sprite2D:
-			# 排除已经有明确用途的节点(如卡牌主图)
-			if child.name != "itemImg":
-				textures_array.append(child)
-		find_all_texture_nodes(child, textures_array)
-
 # 辅助函数：尝试查找卡牌标题节点
 func find_card_title_node():
 	# 尝试多种可能的路径
@@ -323,93 +275,22 @@ func find_all_labels(node, labels_array):
 			labels_array.append(child)
 		find_all_labels(child, labels_array)
 
-# 新增：更新卡牌框架的函数
-func update_card_frame():
-	# 根据脑区来改变卡牌框架的外观
-	var frame_style = ""
-	var frame_color = Color.WHITE
+# 直接更新卡牌类型图标
+func update_card_type_icon():
+	var type_icon = $Control/CardTypeIcon
+	if type_icon == null:
+		print("CardTypeIcon 节点未找到")
+		return
+		
+	print("找到CardTypeIcon节点: " + str(type_icon.get_path()))
 	
-	# 根据脑区选择不同的框架样式
-	match brainRegion:
-		"杏仁核":
-			frame_style = "amygdala"
-			frame_color = Color(1.0, 0.5, 0.5) # 红色调
-		"伏隔核":
-			frame_style = "nucleus_accumbens"
-			frame_color = Color(1.0, 0.8, 0.2) # 金色调
-		"前额叶皮层":
-			frame_style = "prefrontal_cortex"
-			frame_color = Color(0.5, 0.7, 1.0) # 蓝色调
-		"海马体":
-			frame_style = "hippocampus"
-			frame_color = Color(0.8, 0.5, 1.0) # 紫色调
-		_:
-			frame_style = "default"
-			frame_color = Color.WHITE
+	# 设置图标可见性
+	type_icon.visible = true
 	
-	print("设置卡牌框架样式: " + frame_style + " 基于脑区: " + brainRegion)
-	
-	# 查找卡牌框架节点
-	var card_frame = find_card_frame_node()
-	if card_frame:
-		# 如果找到框架节点，改变其颜色
-		if card_frame is ColorRect:
-			card_frame.color = frame_color
-			print("更新卡牌框架颜色为: " + str(frame_color))
-		elif "modulate" in card_frame:
-			card_frame.modulate = frame_color
-			print("更新卡牌框架色调为: " + str(frame_color))
-	
-	# 尝试查找并加载对应的框架纹理
-	var frame_texture_path = "res://assets/frames/" + frame_style + ".png"
-	var frame_texture = load(frame_texture_path) if ResourceLoader.exists(frame_texture_path) else null
-	
-	if frame_texture:
-		var frame_sprite = find_card_frame_sprite()
-		if frame_sprite and (frame_sprite is TextureRect or frame_sprite is Sprite2D):
-			frame_sprite.texture = frame_texture
-			print("更新卡牌框架纹理: " + frame_texture_path)
-
-# 查找卡牌框架节点
-func find_card_frame_node():
-	var possible_paths = [
-		"Control/ColorRect/CardFrame",
-		"ColorRect/CardFrame",
-		"CardFrame"
-	]
-	
-	for path in possible_paths:
-		var node = get_node_or_null(path)
-		if node:
-			print("找到卡牌框架节点: " + path)
-			return node
-	
-	print("无法找到卡牌框架节点")
-	return null
-
-# 查找卡牌框架的精灵节点
-func find_card_frame_sprite():
-	var possible_paths = [
-		"Control/ColorRect/CardFrame/FrameSprite",
-		"Control/ColorRect/CardFrame",
-		"ColorRect/CardFrame",
-		"CardFrame"
-	]
-	
-	for path in possible_paths:
-		var node = get_node_or_null(path)
-		if node and (node is TextureRect or node is Sprite2D):
-			print("找到卡牌框架精灵节点: " + path)
-			return node
-	
-	# 如果没有找到明确的框架精灵，尝试搜索所有TextureRect或Sprite2D
-	var textures = []
-	find_all_texture_nodes(self, textures)
-	
-	for texture in textures:
-		if "frame" in texture.name.to_lower() or texture.name == "CardFrame":
-			print("找到可能的框架精灵: " + texture.name)
-			return texture
-	
-	print("无法找到卡牌框架精灵节点")
-	return null
+	# 加载对应的图标
+	var icon_path = "res://assets/icons/" + cardType.to_lower() + ".png"
+	if ResourceLoader.exists(icon_path):
+		type_icon.texture = load(icon_path)
+		print("直接设置卡牌类型图标: " + cardType + ", 路径: " + icon_path)
+	else:
+		print("警告: 找不到图标资源: " + icon_path)

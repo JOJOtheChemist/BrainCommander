@@ -13,7 +13,7 @@ extends Node2D
 
 func add_new_card(cardName,cardDeck,caller=scene_1)->Node:
 	print("开始创建新卡牌："+str(cardName))
-	var cardClass=CardInfos.infosDic[cardName]["base_cardClass"]
+	var cardClass=CardInfos.infosDic[cardName]["base_cardType"]
 	print("添加的卡的类型为%s:"%cardClass)
 	var cardToAdd
 	
