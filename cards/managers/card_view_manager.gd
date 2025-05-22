@@ -243,16 +243,16 @@ func set_card_type(card_type: String):
 			card_type_icon.visible = true
 			print("成功设置卡牌类型图标! 新纹理=", texture, ", 可见性=", card_type_icon.visible)
 			
-			# 强制重绘 (使用queue_redraw替代update)
+			# 强制重绘 (使用queue_redraw而不是已被移除的update方法)
 			if card_type_icon is Control:
 				card_type_icon.queue_redraw()
-				print("已请求重绘卡牌类型图标")
+				print("请求重绘图标")
 			
 			# 更新父节点
 			var parent = card_type_icon.get_parent()
 			if parent and parent is Control:
 				parent.queue_redraw()
-				print("已请求重绘父节点: " + parent.name)
+				print("请求重绘父节点: " + parent.name)
 		else:
 			print("错误: CardTypeIcon不是TextureRect类型，而是: " + card_type_icon.get_class())
 	else:
@@ -279,6 +279,7 @@ func set_card_frame(brain_region: String):
 	# 根据脑区选择对应的框架图片
 	var frame_texture = null
 	var normalized_region = normalize_brain_region(brain_region)
+	print("规范化后的脑区名称: " + normalized_region)
 	
 	if brain_region != "":
 		# 方法1：直接匹配（大小写敏感）
@@ -304,33 +305,43 @@ func set_card_frame(brain_region: String):
 				# 确定备用框架名
 				var frame_name = ""
 				match normalized_region:
-					"amygdala": frame_name = "amygdala_frame"
-					"nucleus_accumbens", "nucleus accumbens": frame_name = "nucleus_accumbens_frame"
-					"cortex", "prefrontal_cortex", "prefrontal cortex": frame_name = "cortex_frame"
-					"hippocampus": frame_name = "hippocampus_frame"
+					"amygdala": 
+						frame_name = "amygdala_frame"
+					"nucleus_accumbens", "nucleus accumbens": 
+						frame_name = "nucleus_accumbens_frame"
+					"cortex", "prefrontal_cortex", "prefrontal cortex": 
+						frame_name = "cortex_frame"
+					"hippocampus": 
+						frame_name = "hippocampus_frame"
 					_: 
 						print("未匹配的脑区: " + normalized_region + "，使用默认框架")
 						frame_name = "nucleus_accumbens_frame" # 默认框架
 				
 				# 尝试直接加载
 				var frame_path = "res://assets/frames/" + frame_name + ".png"
+				print("尝试加载框架: " + frame_path)
 				if ResourceLoader.exists(frame_path):
 					frame_texture = load(frame_path)
 					print("方法4: 直接加载框架: " + frame_path)
+				else:
+					print("错误: 找不到框架文件: " + frame_path)
 	
 	# 如果成功找到纹理，应用它
 	if frame_texture != null:
+		print("设置前的框架: " + str(card_frame.texture))
 		card_frame.texture = frame_texture
-		print("成功设置卡片框架: " + brain_region)
+		print("成功设置卡片框架: " + brain_region + ", 新框架: " + str(card_frame.texture))
 		
 		# 强制重绘
 		if card_frame is Control:
 			card_frame.queue_redraw()
+			print("请求重绘框架")
 			
 		# 更新父节点
 		var parent = card_frame.get_parent()
 		if parent and parent is Control:
 			parent.queue_redraw()
+			print("请求重绘父节点: " + parent.name)
 	else:
 		print("警告: 无法为脑区 " + brain_region + " 找到合适的框架")
 
