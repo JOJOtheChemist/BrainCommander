@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cper56cxk0sl1"]
+[gd_scene load_steps=7 format=3 uid="uid://cper56cxk0sl1"]
 
 [ext_resource type="Script" uid="uid://ds3gq65i0j2y3" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="PackedScene" uid="uid://bmjqf30wl6ddi" path="res://cards/card.tscn" id="1_ig7tw"]
 [ext_resource type="PackedScene" uid="uid://cu546fiupegt0" path="res://deck/deck.tscn" id="2_0xm2m"]
+[ext_resource type="Texture2D" uid="uid://dnqcyb1rqfai4" path="res://assets/修改画面描述及推荐色系-2.png" id="3_7mycd"]
 [ext_resource type="PackedScene" uid="uid://dfbb6jv3awdtw" path="res://dashboard/dashboard.tscn" id="4_1bvp3"]
 [ext_resource type="Script" uid="uid://bsnva8espr1wm" path="res://deck/deck-chupai.gd" id="4_lquwl"]
 
@@ -25,14 +26,24 @@ siteItems = {
 }
 
 [node name="Control" type="Control" parent="."]
-visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Control2" parent="." node_paths=PackedStringArray("follow_target") groups=["cardDropable"] instance=ExtResource("1_ig7tw")]
+offset_left = 905.0
+offset_top = 18.0
+offset_right = 1123.0
+offset_bottom = 406.0
+cardName = "记忆下载"
+brainRegion = "1233"
 follow_target = NodePath("../Control")
+
+[node name="修改画面描述及推荐色系-2" type="Sprite2D" parent="."]
+position = Vector2(610, 203)
+scale = Vector2(0.25651, 0.25651)
+texture = ExtResource("3_7mycd")
 
 [node name="deck-self" parent="." instance=ExtResource("2_0xm2m")]
 offset_left = 429.0
@@ -80,13 +91,14 @@ offset_bottom = 326.0
 theme_override_font_sizes/font_size = 25
 text = "12345"
 
-[node name="deck-profile-self" parent="." node_paths=PackedStringArray("effect_label") instance=ExtResource("2_0xm2m")]
+[node name="deck-profile-self" parent="." node_paths=PackedStringArray("effect_label", "value_label") instance=ExtResource("2_0xm2m")]
 offset_left = 106.0
 offset_top = 833.0
 offset_right = 315.0
 offset_bottom = 1073.0
 script = ExtResource("4_lquwl")
 effect_label = NodePath("RichTextLabel")
+value_label = NodePath("blood")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="deck-profile-self"]
 layout_mode = 1
@@ -97,13 +109,23 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "12345"
 
-[node name="deck-profile-anemy1" parent="." node_paths=PackedStringArray("effect_label") instance=ExtResource("2_0xm2m")]
+[node name="blood" type="RichTextLabel" parent="deck-profile-self"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 244.0
+offset_right = 209.0
+offset_bottom = 403.0
+text = "blood
+"
+
+[node name="deck-profile-anemy1" parent="." node_paths=PackedStringArray("effect_label", "value_label") instance=ExtResource("2_0xm2m")]
 offset_left = 427.0
 offset_top = 88.0
 offset_right = 636.0
 offset_bottom = 328.0
 script = ExtResource("4_lquwl")
 effect_label = NodePath("RichTextLabel")
+value_label = NodePath("blood")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="deck-profile-anemy1"]
 layout_mode = 1
@@ -114,13 +136,23 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "12345"
 
-[node name="deck-profile-anemy2" parent="." node_paths=PackedStringArray("effect_label") instance=ExtResource("2_0xm2m")]
+[node name="blood" type="RichTextLabel" parent="deck-profile-anemy1"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 244.0
+offset_right = 209.0
+offset_bottom = 362.0
+text = "blood
+"
+
+[node name="deck-profile-anemy2" parent="." node_paths=PackedStringArray("effect_label", "value_label") instance=ExtResource("2_0xm2m")]
 offset_left = 1519.0
 offset_top = 310.0
 offset_right = 1728.0
 offset_bottom = 550.0
 script = ExtResource("4_lquwl")
 effect_label = NodePath("RichTextLabel")
+value_label = NodePath("blood")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="deck-profile-anemy2"]
 layout_mode = 1
@@ -130,5 +162,14 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 text = "12345"
+
+[node name="blood" type="RichTextLabel" parent="deck-profile-anemy2"]
+layout_mode = 0
+offset_left = 1.0
+offset_top = 244.0
+offset_right = 209.0
+offset_bottom = 433.0
+text = "blood
+"
 
 [connection signal="button_down" from="Button" to="." method="get_some_card"]

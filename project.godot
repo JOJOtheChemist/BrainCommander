@@ -10,14 +10,19 @@ config_version=5
 
 [application]
 
-config/name="cardFrameS"
-run/main_scene="uid://cper56cxk0sl1"
-config/features=PackedStringArray("4.4", "Forward Plus")
-config/icon="res://icon.svg"
+config/name="Godot Card Game Frame"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.2", "GL Compatibility")
 
 [autoload]
 
+CardInfoManager="*res://assets/card_info_manager.gd"
 CardInfos="*res://assets/cardsInfo.gd"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
 
 [display]
 

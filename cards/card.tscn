@@ -1,7 +1,11 @@
-[gd_scene load_steps=6 format=3 uid="uid://bmjqf30wl6ddi"]
+[gd_scene load_steps=10 format=3 uid="uid://bmjqf30wl6ddi"]
 
 [ext_resource type="Script" uid="uid://cthb4d6c2kkxh" path="res://cards/card.gd" id="1_nwofj"]
 [ext_resource type="Texture2D" uid="uid://bcptp1n4fu6x8" path="res://cardImg/AdrenalineSurge.png" id="2_nwofj"]
+[ext_resource type="Texture2D" uid="uid://b5fteptuey8o4" path="res://cardImg/ExperienceDownload.png" id="3_jsqqk"]
+[ext_resource type="Texture2D" uid="uid://cdtjj5bc2010g" path="res://assets/frames/amygdala_frame.png" id="4_nwj5s"]
+[ext_resource type="Texture2D" uid="uid://cd8x11byspur" path="res://assets/icons/attack.png" id="5_hel13"]
+[ext_resource type="Texture2D" uid="uid://xsa8mppjvymr" path="res://assets/cost/cost-bg.png" id="5_nwj5s"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_nwofj"]
 draw_center = false
@@ -24,8 +28,8 @@ layout_mode = 3
 anchors_preset = 0
 offset_left = 2.0
 offset_top = -1.0
-offset_right = 47.0
-offset_bottom = 79.0
+offset_right = 62.0
+offset_bottom = 214.0
 script = ExtResource("1_nwofj")
 
 [node name="Control" type="Panel" parent="."]
@@ -34,18 +38,33 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_right = 143.0
+offset_bottom = 209.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="Control"]
+[node name="CardImage" type="TextureRect" parent="Control"]
+offset_left = -20.0
+offset_top = 5.0
+offset_right = 233.0
+offset_bottom = 469.0
+texture = ExtResource("3_jsqqk")
+expand_mode = 1
+
+[node name="ColorRect" type="TextureRect" parent="Control"]
 custom_minimum_size = Vector2(45, 80)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -95.0
+offset_top = -123.0
+offset_right = 187.0
+offset_bottom = 118.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(1, 0.321569, 1, 0)
+texture = ExtResource("4_nwj5s")
+expand_mode = 1
 
 [node name="itemImg" type="TextureRect" parent="Control/ColorRect"]
 custom_minimum_size = Vector2(45, 80)
@@ -53,6 +72,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 57.0
+offset_top = 105.0
+offset_right = -53.9375
+offset_bottom = -103.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("2_nwofj")
@@ -69,17 +92,132 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = SubResource("Theme_4k7q8")
 
-[node name="name" type="Label" parent="Control/ColorRect"]
-visible = false
-layout_mode = 0
+[node name="CardFrame" type="TextureRect" parent="Control/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 offset_left = 5.0
-offset_top = -3.0
-offset_right = 131.0
-offset_bottom = 31.0
+offset_top = 2.0
+offset_right = 5.0
+offset_bottom = 2.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("4_nwj5s")
+expand_mode = 1
+
+[node name="CardTitle" type="Label" parent="Control/ColorRect/CardFrame"]
+layout_mode = 0
+offset_left = 189.0
+offset_top = 67.0
+offset_right = 297.0
+offset_bottom = 106.0
+theme_override_font_sizes/font_size = 27
+text = "记忆下载"
+
+[node name="EffectContainer" type="Control" parent="Control/ColorRect/CardFrame"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = -80.0
+offset_top = 146.0
+offset_right = -40.0
+offset_bottom = 250.0
+
+[node name="ColorRect" type="ColorRect" parent="Control/ColorRect/CardFrame"]
+custom_minimum_size = Vector2(30, 60)
+layout_mode = 2
+offset_left = 88.0
+offset_top = 194.0
+offset_right = 184.0
+offset_bottom = 254.0
+color = Color(1, 1, 1, 0)
+
+[node name="CardFrame2" type="TextureRect" parent="Control/ColorRect/CardFrame/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 72.0
+offset_right = -32.0
+offset_bottom = 52.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_nwj5s")
+expand_mode = 1
+
+[node name="CardFrame" type="TextureRect" parent="Control/ColorRect/CardFrame/ColorRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = 16.0
+offset_right = -32.0
+offset_bottom = -4.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_nwj5s")
+expand_mode = 1
+
+[node name="CostContainer" type="Control" parent="Control/ColorRect/CardFrame"]
+anchors_preset = 0
+offset_left = 317.0
+offset_top = 193.0
+offset_right = 390.0
+offset_bottom = 381.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/ColorRect/CardFrame/CostContainer"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CardEffectText" type="Label" parent="Control/ColorRect/CardFrame"]
+offset_left = 105.0
+offset_top = 516.0
+offset_right = 457.0
+offset_bottom = 554.0
+text = "卡牌效果说明卡牌效"
+
+[node name="MechanismText" type="Label" parent="Control/ColorRect/CardFrame"]
+offset_left = 220.0
+offset_top = 552.0
+offset_right = 311.0
+offset_bottom = 576.0
+text = "#积极心理学"
+
+[node name="Button" type="Button" parent="Control/ColorRect"]
+custom_minimum_size = Vector2(45, 80)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 85.0
+offset_top = 52.0
+offset_right = -67.0
+offset_bottom = -148.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_4k7q8")
+
+[node name="name" type="Label" parent="Control/ColorRect"]
+layout_mode = 0
+offset_left = 123.0
+offset_top = 557.0
+offset_right = 219.0
+offset_bottom = 583.0
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 theme_override_font_sizes/font_size = 18
 text = "Your Cards"
 horizontal_alignment = 1
 
+[node name="CardTypeIcon" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 266.0
+offset_top = -71.0
+offset_right = 320.0
+texture = ExtResource("5_hel13")
+expand_mode = 1
+
 [connection signal="button_down" from="Control/ColorRect/itemImg/Button" to="." method="_on_button_button_down"]
 [connection signal="button_up" from="Control/ColorRect/itemImg/Button" to="." method="_on_button_button_up"]
+[connection signal="button_down" from="Control/ColorRect/Button" to="." method="_on_button_button_down"]
+[connection signal="button_up" from="Control/ColorRect/Button" to="." method="_on_button_button_up"]
